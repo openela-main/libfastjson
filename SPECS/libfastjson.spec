@@ -1,6 +1,6 @@
 Name:		libfastjson
 Version:	0.99.9
-Release:	3%{?dist}
+Release:	5%{?dist}
 Summary:	A JSON implementation in C
 License:	MIT
 URL:		https://github.com/rsyslog/libfastjson
@@ -8,6 +8,8 @@ Source0:	http://download.rsyslog.com/libfastjson/libfastjson-%{version}.tar.gz
 
 BuildRequires: autoconf automake libtool
 BuildRequires: make
+
+Patch0: libfastjson-CVE-2020-12762.patch
 
 %description
 LIBFASTJSON implements a reference counting object
@@ -26,6 +28,7 @@ developing applications that use libfastjson.
 
 %prep
 %setup -q
+%patch0 -p1 -b .CVE-2020-12762
 
 for doc in ChangeLog; do
  iconv -f iso-8859-1 -t utf8 $doc > $doc.new &&
@@ -59,6 +62,14 @@ make V=1 check
 %{_libdir}/pkgconfig/libfastjson.pc
 
 %changelog
+* Wed Aug 02 2023 Attila Lakatos <alakatos@redhat.com> - 0.99.9-5
+- Rebuild
+Resolves: rhbz#2227786
+
+* Tue May 16 2023 Attila Lakatos <alakatos@redhat.com> - 0.99.9-4
+- Address CVE-2020-12762
+Resolves: rhbz#2203172
+
 * Mon Aug 09 2021 Mohan Boddu <mboddu@redhat.com> - 0.99.9-3
 - Rebuilt for IMA sigs, glibc 2.34, aarch64 flags
   Related: rhbz#1991688
